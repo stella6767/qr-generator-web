@@ -53,41 +53,41 @@ jobs:
            scripts/
            nginx/nginx.conf
            DockerFile
-           docker-compose-dev.yml
+           docker-compose-qr.yml
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v4
-        with:
-           name: cicdsample
-      - name: Setup SSH
-        uses: webfactory/ssh-agent@v0.5.4
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-      - name: Add remote server to known hosts
-        run: |
-          mkdir -p ~/.ssh
-          ssh-keyscan ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
-      - name: check File List
-        run: | 
-         pwd
-         ls -al    
-         
-      - name: SCP transfer
-        run: |
-         scp -r scripts module-api DockerFile docker-compose-dev.yml nginx ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}:~/cicd
-         
-      - name: Execute remote commands
-        run: |
-          if [[ "${{ inputs.branch }}" == "main" ]]; then
-             ssh -v ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} "sudo sh ~/cicd/scripts/deploy-docker.sh"             
-          else
-            echo "No specific script found for this"
-          fi
-     # delete-artifact
-      - uses: geekyeggo/delete-artifact@v5
-        with:
-          name: cicdsample
+#  deploy:
+#    needs: build
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Download artifact
+#        uses: actions/download-artifact@v4
+#        with:
+#           name: cicdsample
+#      - name: Setup SSH
+#        uses: webfactory/ssh-agent@v0.5.4
+#        with:
+#          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+#      - name: Add remote server to known hosts
+#        run: |
+#          mkdir -p ~/.ssh
+#          ssh-keyscan ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
+#      - name: check File List
+#        run: |
+#         pwd
+#         ls -al
+#
+#      - name: SCP transfer
+#        run: |
+#         scp -r scripts module-api DockerFile docker-compose-dev.yml nginx ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}:~/cicd
+#
+#      - name: Execute remote commands
+#        run: |
+#          if [[ "${{ inputs.branch }}" == "main" ]]; then
+#             ssh -v ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} "sudo sh ~/cicd/scripts/deploy-docker.sh"
+#          else
+#            echo "No specific script found for this"
+#          fi
+#     # delete-artifact
+#      - uses: geekyeggo/delete-artifact@v5
+#        with:
+#          name: cicdsample
