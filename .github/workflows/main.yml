@@ -52,7 +52,7 @@ jobs:
            build/libs/
            scripts/
            nginx/nginx.conf
-           DockerFile
+           Dockerfile
            docker-compose-qr.yml
 
   deploy:
