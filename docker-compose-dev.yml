@@ -1,12 +1,6 @@
 version: "3"
 
 services:
-#  ollama:
-#    hostname: ollama
-#    container_name: ollama
-#    image: ollama/ollama
-#    ports:
-#      - "11434:11434"
   nginx:
     container_name: nginx
     image: nginx
@@ -45,8 +39,6 @@ services:
       #dockerfile: /Users/stella6767/IdeaProjects/free/DockerFile
       dockerfile: /home/ubuntu/cicd/DockerFile
     ports:
-      - "8081:8081"
-    volumes:
-      - /logs:/logs
+      - "8082:8082"
     environment:
       - "spring_profiles_active=prod"

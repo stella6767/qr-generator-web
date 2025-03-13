@@ -31,7 +31,7 @@ class S3Config {
         return S3Client.builder()
             .region(Region.AP_NORTHEAST_2)
             .credentialsProvider(StaticCredentialsProvider.create(createAwsCredential()))
-            .build();
+            .build()
     }
 
 
