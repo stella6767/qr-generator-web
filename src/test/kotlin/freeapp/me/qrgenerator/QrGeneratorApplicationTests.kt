@@ -36,7 +36,10 @@ class QrGeneratorApplicationTests(
             originalFileName, contentType, content
         )
 
-        s3Service.putObject(mockFile)
+        val putObject = s3Service.putObject(mockFile)
+
+        println("!!!")
+        println(putObject)
     }
 
     @Test

@@ -12,8 +12,8 @@ enum class QrGeneratorType(
     WIFI( "\uD83D\uDEDC", "Wifi"),
     VCARD("🪪", "V-Card"),
     TEL("\uD83D\uDCDE", "Tel"),
+    PDF("\uD83D\uDCDC", "PDF"),
 
-//    PDF("\uD83D\uDCDE", "PDF"),
 //    IMAGES("\uD83D\uDCDE", "Images"),
 //    PROFILE_CARD("\uD83D\uDCDE", "Profile Card"),
 

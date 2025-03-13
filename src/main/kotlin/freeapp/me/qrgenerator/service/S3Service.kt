@@ -8,7 +8,6 @@ import software.amazon.awssdk.core.sync.RequestBody
 import software.amazon.awssdk.services.s3.S3Client
 import software.amazon.awssdk.services.s3.model.GetUrlRequest
 import software.amazon.awssdk.services.s3.model.PutObjectRequest
-import java.util.*
 
 
 @Service
@@ -21,16 +20,18 @@ class S3Service(
     @Value("\${s3.bucket}")
     private lateinit var bucket: String
 
+    @Value("\${s3.url}")
+    private lateinit var staticUrl: String
+
     private val s3Utilities = s3Client.utilities()
-    fun putObject(multipartFile: MultipartFile) {
+    fun putObject(multipartFile: MultipartFile): String {
 
         if (multipartFile.isEmpty) {
             throw IllegalArgumentException("empty file")
         }
 
-        val uuid = UUID.randomUUID().toString()
         val fileName =
-            uuid + "_" + multipartFile.originalFilename
+            generateRandomNumberString() + "_" + multipartFile.originalFilename
 
         val objectRequest = PutObjectRequest.builder()
             .bucket(bucket)
@@ -47,9 +48,16 @@ class S3Service(
             .bucket(bucket).key(fileName)
             .build()
 
-        val url = s3Utilities.getUrl(getUrlRequest)
+        //val url = s3Utilities.getUrl(getUrlRequest)
 
-        println(url)
+        return "$staticUrl/$fileName"
+    }
+
+
+    private fun generateRandomNumberString(): String {
+        return (1..10)
+            .map { (0..9).random() }
+            .joinToString("")
     }
 
 
