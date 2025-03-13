@@ -43,10 +43,10 @@ class QrController(
 
     @HxRequest
     @PostMapping("/qrcode")
-    fun qrcode(
+    fun generateQrCode(
         model: Model,
         @RequestParam type: QrGeneratorType,
-        @RequestParam qrReqDto: HashMap<String, Any>
+        @RequestParam qrReqDto: HashMap<String, Any>,
     ): FragmentsRendering {
 
         val qrCode =
@@ -60,6 +60,7 @@ class QrController(
             .fragment("component/qrCodeBtn")
             .build()
     }
+
 
 
 }

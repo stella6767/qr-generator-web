@@ -7,10 +7,12 @@ server:
       charset: utf-8
       enabled: true
 
-
 spring:
   application:
     name: qr-generator
+  config:
+    import:
+      - secret.yml
 
   servlet:
     multipart:
