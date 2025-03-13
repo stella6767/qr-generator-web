@@ -36,8 +36,8 @@ services:
 #      - linux/amd64
     build:
       # context: .
-      #dockerfile: /Users/stella6767/IdeaProjects/free/DockerFile
-      dockerfile: /home/ubuntu/cicd/qr/DockerFile
+      #dockerfile: /Users/stella6767/IdeaProjects/free/Dockerfile
+      dockerfile: /home/ubuntu/cicd/qr/Dockerfile
     ports:
       - "8082:8082"
     environment:
