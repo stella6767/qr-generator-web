@@ -78,7 +78,7 @@ jobs:
 
       - name: SCP transfer
         run: |
-         scp -r scripts *.jar DockerFile docker-compose-dev.yml nginx ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}:~/cicd/qr
+         scp -r scripts build/libs/*.jar DockerFile docker-compose-dev.yml nginx ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}:~/cicd/qr
 
 #      - name: Execute remote commands
 #        run: |
