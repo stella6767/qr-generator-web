@@ -50,8 +50,7 @@ jobs:
           retention-days: 1
           path: |
            build/libs/
-           scripts/
-           nginx/nginx.conf
+           scripts/           
            Dockerfile
            docker-compose-qr.yml
 
@@ -78,7 +77,7 @@ jobs:
 
       - name: SCP transfer
         run: |
-         scp -r scripts build/libs/*.jar Dockerfile docker-compose-qr.yml nginx ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}:~/cicd/qr
+         scp -r scripts build/libs/*.jar Dockerfile docker-compose-qr.yml ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}:~/cicd/qr
 
       - name: Execute remote commands
         run: |
