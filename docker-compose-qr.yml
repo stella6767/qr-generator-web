@@ -2,12 +2,12 @@ version: "3"
 
 services:
   nginx:
-    container_name: nginx
+    container_name: nginx-qr
     image: nginx
     restart: always
     ports:
-      - "80:80/tcp"
-      - "443:443"
+      - "445:80/tcp"
+      - "442:443"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf # nginx.conf를 mount.
       - ./certbot/conf:/etc/letsencrypt
@@ -30,7 +30,7 @@ services:
   web:
     extra_hosts:
       - "host.docker.internal:host-gateway"
-    container_name: web
+    container_name: web-qr
     restart: always
     #platform: linux/arm64/v8
 #      - linux/amd64
