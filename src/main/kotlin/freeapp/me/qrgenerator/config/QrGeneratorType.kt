@@ -14,7 +14,7 @@ enum class QrGeneratorType(
     TEL("\uD83D\uDCDE", "Tel"),
     PDF("\uD83D\uDCDC", "PDF"),
 
-//todo 귀찮으니까 나중에
+//    todo 귀찮으니까 나중에
 //    IMAGES("\uD83D\uDCDE", "Images"),
 //    PROFILE_CARD("\uD83D\uDCDE", "Profile Card"),
 
