@@ -3,6 +3,9 @@ package freeapp.me.qrgenerator
 import com.fasterxml.jackson.databind.ObjectMapper
 import freeapp.me.qrgenerator.service.QrService
 import freeapp.me.qrgenerator.service.S3Service
+import freeapp.me.qrgenerator.web.dto.EmailBodyDto
+import gg.jte.TemplateEngine
+import gg.jte.output.StringOutput
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
@@ -16,10 +19,29 @@ import java.nio.file.Paths
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 @SpringBootTest
 class QrGeneratorApplicationTests(
-    private val s3Service: S3Service
+    private val s3Service: S3Service,
+    private val objectMapper: ObjectMapper,
+    private val templateEngine: TemplateEngine
 ) {
 
-    private val qrService = QrService(ObjectMapper())
+    private val qrService = QrService(objectMapper, s3Service )
+
+
+    @Test
+    fun mailTemplateTest(){
+
+        val output = StringOutput()
+
+        val body = EmailBodyDto(
+            validityMinutes = "10"
+        )
+
+        templateEngine.render("mail/verification.jte", body, output)
+
+        val result = output.toString()
+        println(result)
+    }
+
 
     @Test
     fun putObjectTest(){
