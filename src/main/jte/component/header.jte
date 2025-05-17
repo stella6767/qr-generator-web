@@ -8,7 +8,25 @@
             </svg>
         </a>
     </div>
-    <div class="absolute left-1/2 top-1/3 transform -translate-x-1/2 font-bold text-xl flex items-center">
-        QR Generator
+    <a href="/">
+        <div class="cursor-pointer absolute left-1/2 top-1/3 transform -translate-x-1/2 font-bold text-xl flex items-center">
+            QR Generator
+        </div>
+    </a>
+    <div>
+        <a href="/login">
+            <button type="button"
+                    class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium cursor-pointer
+                    rounded-lg border border-transparent bg-orange-500 text-white hover:bg-[#b4b4b480] focus:outline-hidden focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none">
+                Log In
+            </button>
+        </a>
+        <a href="/sign-up">
+            <button type="button"
+                    class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg
+                    cursor-pointer border border-transparent bg-blue-600 text-white hover:bg-[#b4b4b480] focus:outline-hidden focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none">
+                Sign Up
+            </button>
+        </a>
     </div>
 </div>

@@ -39,6 +39,7 @@ secrets_base64.txt
 
 ### VS Code ###
 .vscode/
+node_modules
 
 ### JTE ###
 /jte-classes/

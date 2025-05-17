@@ -1,4 +1,4 @@
-package freeapp.me.qrgenerator.config
+package freeapp.me.qrgenerator.exception
 
 import gg.jte.TemplateEngine
 import gg.jte.TemplateOutput

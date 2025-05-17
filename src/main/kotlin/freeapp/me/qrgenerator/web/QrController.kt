@@ -1,4 +1,4 @@
-package freeapp.me.qrgenerator.controller
+package freeapp.me.qrgenerator.web
 
 import freeapp.me.qrgenerator.config.QrGeneratorType
 import freeapp.me.qrgenerator.service.QrService
