@@ -1,14 +1,17 @@
 package freeapp.me.qrgenerator.config
 
-import freeapp.me.qrgenerator.entity.User
 import freeapp.me.qrgenerator.repo.UserRepository
+import freeapp.me.qrgenerator.service.SignService
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.security.access.AccessDeniedException
 import org.springframework.security.authentication.AuthenticationManager
+import org.springframework.security.authentication.ProviderManager
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -29,13 +32,11 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
-import org.springframework.security.access.AccessDeniedException
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true, prePostEnabled = true)
 class SecurityConfig(
-    private val configuration: AuthenticationConfiguration,
     private val userRepository: UserRepository,
 ) {
     private val log = KotlinLogging.logger {}
@@ -52,8 +53,16 @@ class SecurityConfig(
     }
 
     @Bean
-    fun authenticationManager(): AuthenticationManager {
-        return configuration.authenticationManager
+    fun authenticationManager(
+        passwordEncoder: PasswordEncoder,
+        signService: SignService
+    ): AuthenticationManager {
+
+        val provider = DaoAuthenticationProvider()
+        provider.setUserDetailsService(signService)
+        provider.setPasswordEncoder(passwordEncoder)
+
+        return ProviderManager(provider)
     }
 
     @Bean
@@ -83,14 +92,7 @@ class SecurityConfig(
                     //.anyRequest().authenticated()
                     .anyRequest().permitAll()
             }
-            .formLogin {
-                it.loginPage("/v1")
-                    .loginProcessingUrl("/v1/login")
-                    .usernameParameter("email")
-                    //.defaultSuccessUrl("/v1/task")
-                    .permitAll()
-                    .successHandler(CustomLoginSuccessHandler(userRepository))
-            }
+            .formLogin { it.disable() }
             .logout {
                 it.logoutUrl("/v1/logout")
                 it.logoutSuccessHandler(CustomLogoutSuccessHandler())
