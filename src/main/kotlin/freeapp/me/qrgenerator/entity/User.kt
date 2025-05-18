@@ -9,6 +9,7 @@ import java.time.LocalDateTime
 @Entity
 @Table(name = "user")
 class User(
+    socialId:String? = null,
     status: Status,
     username: String,
     email: String,
@@ -17,6 +18,9 @@ class User(
     signType: SignType,
     lastLoginDate: LocalDateTime? = null,
 ) : BaseEntity() {
+
+    @Column(name = "social_id")
+    var socialId: String? = socialId
 
     @Column(nullable = false)
     val username = username
@@ -64,10 +68,23 @@ class User(
         ADMIN("ROLE_ADMIN"),
     }
 
-    enum class SignType() {
-        GOOGLE,
-        GITHUB,
-        EMAIL;
+    enum class SignType(
+        val clientName: String,
+        val authorizationUrl: String,
+    ) {
+        GOOGLE(
+            "Google",
+            "/oauth2/authorization/google"
+        ),
+        GITHUB(
+            "GitHub",
+            "/oauth2/authorization/github"
+        ),
+        EMAIL(
+            "Email",
+            "/oauth2/authorization/email"
+        )
+        ;
 
         companion object {
             @JsonCreator

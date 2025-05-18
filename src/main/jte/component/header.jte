@@ -1,3 +1,6 @@
+@import freeapp.me.qrgenerator.util.SecurityUtilsKt
+
+
 <div class="bg-gray-400 sticky top-0 z-30 flex justify-between w-full p-4 bg-gray-100 relative">
     <div class="flex-shrink-0">
         <a href="https://github.com/stella6767/qr-generator-web" target="_blank">
@@ -14,19 +17,29 @@
         </div>
     </a>
     <div>
-        <a href="/login">
-            <button type="button"
-                    class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium cursor-pointer
+        @if(SecurityUtilsKt.isLoggedIn())
+            <a href="/logout">
+                <button type="button"
+                        class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium cursor-pointer
                     rounded-lg border border-transparent bg-orange-500 text-white hover:bg-[#b4b4b480] focus:outline-hidden focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none">
-                Log In
-            </button>
-        </a>
-        <a href="/sign-up">
-            <button type="button"
-                    class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg
+                    Logout
+                </button>
+            </a>
+        @else
+            <a href="/login">
+                <button type="button"
+                        class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium cursor-pointer
+                    rounded-lg border border-transparent bg-orange-500 text-white hover:bg-[#b4b4b480] focus:outline-hidden focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none">
+                    Log In
+                </button>
+            </a>
+            <a href="/sign-up">
+                <button type="button"
+                        class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg
                     cursor-pointer border border-transparent bg-blue-600 text-white hover:bg-[#b4b4b480] focus:outline-hidden focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none">
-                Sign Up
-            </button>
-        </a>
+                    Sign Up
+                </button>
+            </a>
+        @endif
     </div>
 </div>

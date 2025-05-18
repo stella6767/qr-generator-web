@@ -24,7 +24,6 @@ class QrController(
         return "page/index"
     }
 
-    //todo dynamic with s3
 
     @HxRequest
     @GetMapping("/qr/{type}")

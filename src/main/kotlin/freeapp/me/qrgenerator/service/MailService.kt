@@ -9,6 +9,7 @@ import mu.KotlinLogging
 import org.springframework.mail.SimpleMailMessage
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.MimeMessageHelper
+import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
 import org.springframework.util.StringUtils
 import java.time.LocalDateTime
@@ -39,7 +40,7 @@ class MailService(
         log.info("메일 발송 성공!")
     }
 
-    //todo 비동기
+    @Async
     fun sendEmailTemplate(
         to: String,
         emailDto: EmailDto,

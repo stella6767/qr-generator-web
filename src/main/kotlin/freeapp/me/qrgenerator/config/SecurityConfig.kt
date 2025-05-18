@@ -1,7 +1,8 @@
 package freeapp.me.qrgenerator.config
 
 import freeapp.me.qrgenerator.repo.UserRepository
-import freeapp.me.qrgenerator.service.SignService
+import freeapp.me.qrgenerator.service.sign.OAuth2SignService
+import freeapp.me.qrgenerator.service.sign.SignService
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import mu.KotlinLogging
@@ -12,6 +13,7 @@ import org.springframework.security.access.AccessDeniedException
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.ProviderManager
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -38,6 +40,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 @EnableMethodSecurity(securedEnabled = true, prePostEnabled = true)
 class SecurityConfig(
     private val userRepository: UserRepository,
+    private val configuration: AuthenticationConfiguration,
 ) {
     private val log = KotlinLogging.logger {}
 
@@ -52,17 +55,16 @@ class SecurityConfig(
         return BCryptPasswordEncoder()
     }
 
-    @Bean
+    //@Bean
     fun authenticationManager(
         passwordEncoder: PasswordEncoder,
         signService: SignService
     ): AuthenticationManager {
-
-        val provider = DaoAuthenticationProvider()
-        provider.setUserDetailsService(signService)
-        provider.setPasswordEncoder(passwordEncoder)
-
-        return ProviderManager(provider)
+//        val provider = DaoAuthenticationProvider()
+//        provider.setUserDetailsService(signService)
+//        provider.setPasswordEncoder(passwordEncoder)
+//        return ProviderManager(provider)
+        return configuration.authenticationManager
     }
 
     @Bean
@@ -80,9 +82,14 @@ class SecurityConfig(
 
 
     @Bean
-    fun filterChain(http: HttpSecurity): SecurityFilterChain {
+    fun filterChain(
+        http: HttpSecurity,
+        encoder: PasswordEncoder,
+    ): SecurityFilterChain {
 
         http.csrf { csrf -> csrf.disable() }
+            .formLogin { it.disable() }
+            .httpBasic { it.disable() }
 
         http
             .authorizeHttpRequests { authorizeHttpRequests ->
@@ -92,9 +99,16 @@ class SecurityConfig(
                     //.anyRequest().authenticated()
                     .anyRequest().permitAll()
             }
-            .formLogin { it.disable() }
+            .oauth2Login { oauth2 ->
+                oauth2
+                    .userInfoEndpoint { endpoint ->
+                        endpoint.userService(OAuth2SignService(userRepository, encoder))
+                    }
+                    .successHandler(CustomLoginSuccessHandler(userRepository))
+                    .permitAll()
+            }
             .logout {
-                it.logoutUrl("/v1/logout")
+                it.logoutRequestMatcher(AntPathRequestMatcher("/logout", "GET"))
                 it.logoutSuccessHandler(CustomLogoutSuccessHandler())
                 it.invalidateHttpSession(true)
                 it.deleteCookies("JSESSIONID")
@@ -151,6 +165,7 @@ class SecurityConfig(
     class CustomLogoutSuccessHandler : LogoutSuccessHandler {
 
         private val log = KotlinLogging.logger { }
+
         override fun onLogoutSuccess(
             request: HttpServletRequest,
             response: HttpServletResponse,
@@ -158,7 +173,8 @@ class SecurityConfig(
         ) {
 
             log.info("logout success")
-            val context = SecurityContextHolder.getContext()
+            val context =
+                SecurityContextHolder.getContext()
             context.authentication = null
             SecurityContextHolder.clearContext()
 

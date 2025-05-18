@@ -41,6 +41,9 @@ class GlobalExceptionHandler(
 
         val output: TemplateOutput = StringOutput()
         templateEngine.render("component/errorAlert.jte", mapOf("msg" to ex.message), output)
+
+        println("??????")
+
         return ResponseEntity(output.toString(), status)
     }
 

@@ -5,6 +5,7 @@ import com.linecorp.kotlinjdsl.render.jpql.JpqlRenderContext
 import com.linecorp.kotlinjdsl.render.jpql.JpqlRenderer
 import freeapp.me.qrgenerator.entity.User
 import freeapp.me.qrgenerator.util.getResult
+import freeapp.me.qrgenerator.util.getSingleResultOrNull
 import jakarta.persistence.EntityManager
 import org.springframework.data.jpa.repository.JpaRepository
 
@@ -15,9 +16,12 @@ interface UserRepository : JpaRepository<User, Long>, UserCustomRepository {
 
 interface UserCustomRepository {
 
-    fun findUserByEmailAndSignTypeAndStatus(
+    fun findUsersByEmailAndSignTypeAndStatus(
         email: String, signType: User.SignType, status: User.Status
     ): MutableList<User>
+
+    fun findUserBySocialIdAndSignTypeAndStatus(socialId: String, signType: User.SignType, status: User.Status): User?
+    fun findActiveUserByEmailAndSignType(email: String, signType: User.SignType): User?
 }
 
 
@@ -28,7 +32,56 @@ class UserCustomRepositoryImpl(
 ) : UserCustomRepository {
 
 
-    override fun findUserByEmailAndSignTypeAndStatus(
+    override fun findUserBySocialIdAndSignTypeAndStatus(
+        socialId: String,
+        signType: User.SignType,
+        status: User.Status
+    ): User? {
+
+        val query = jpql {
+            select(
+                entity(User::class),
+            ).from(
+                entity(User::class),
+            ).where(
+                and(
+                    path(User::socialId).equal(socialId),
+                    path(User::signType).equal(signType),
+                    path(User::status).equal(status),
+                )
+            )
+        }
+
+
+        val render = renderer.render(query = query, ctx)
+        return em.getSingleResultOrNull(render, User::class.java)
+    }
+
+    override fun findActiveUserByEmailAndSignType(
+        email: String,
+        signType: User.SignType,
+    ): User? {
+
+        val query = jpql {
+            select(
+                entity(User::class),
+            ).from(
+                entity(User::class),
+            ).where(
+                and(
+                    path(User::email).equal(email.trim()),
+                    path(User::status).equal(User.Status.ACTIVATED),
+                    path(User::signType).equal(signType),
+                )
+            )
+        }
+
+        val render = renderer.render(query = query, ctx)
+        return em.getSingleResultOrNull(render, User::class.java)
+    }
+
+
+    override fun findUsersByEmailAndSignTypeAndStatus(
         email: String,
         signType: User.SignType,
         status: User.Status
