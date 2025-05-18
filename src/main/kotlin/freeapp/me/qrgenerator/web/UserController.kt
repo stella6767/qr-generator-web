@@ -3,8 +3,12 @@ package freeapp.me.qrgenerator.web
 import freeapp.me.qrgenerator.config.UserPrincipal
 import freeapp.me.qrgenerator.service.sign.SignService
 import freeapp.me.qrgenerator.web.dto.LoginDto
+import freeapp.me.qrgenerator.web.dto.ResendCodeDto
 import freeapp.me.qrgenerator.web.dto.SignUpDto
 import freeapp.me.qrgenerator.web.dto.VerifyDto
+import io.github.wimdeblauwe.htmx.spring.boot.mvc.HtmxRedirectView
+import io.github.wimdeblauwe.htmx.spring.boot.mvc.HtmxResponse
+import io.github.wimdeblauwe.htmx.spring.boot.mvc.HxRequest
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.validation.Valid
 import org.springframework.security.authentication.AuthenticationManager
@@ -14,6 +18,7 @@ import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.ResponseBody
 
 @Controller
 class UserController(
@@ -38,23 +43,26 @@ class UserController(
     }
 
 
+    @HxRequest
     @PostMapping("/login")
     fun login(
         model: Model,
         loginDto: LoginDto,
         httpRequest: HttpServletRequest,
-    ): String {
+    ): HtmxRedirectView {
 
         signService.login(loginDto, httpRequest)
 
-        return "redirect:/"
+        return HtmxRedirectView("/")
     }
 
 
+    @HxRequest
     @PostMapping("/sign-up")
     fun signUp(
         model: Model,
         @Valid signUpDto: SignUpDto,
+        htmxResponse: HtmxResponse
     ): String {
 
         val dto = signService.signUp(signUpDto)
@@ -63,7 +71,7 @@ class UserController(
         model.addAttribute("token", dto.token)
         model.addAttribute("expireMinute", dto.expireMinute)
 
-        return "page/verify"
+        return "component/auth/verifyCode"
     }
 
 
@@ -77,6 +85,18 @@ class UserController(
         signService.signUpWithEmailVerify(verifyDto, httpRequest)
 
         return "page/index"
+    }
+
+
+    @ResponseBody
+    @PostMapping("/resend-code")
+    fun resendCode(
+        model: Model,
+        resendCodeDto: ResendCodeDto,
+        httpRequest: HttpServletRequest
+    ): String {
+
+        return signService.resendCode(resendCodeDto)
     }
 
 

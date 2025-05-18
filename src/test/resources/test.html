@@ -6,6 +6,18 @@
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
     <script src="https://unpkg.com/htmx.org@2.0.4"></script>
 </head>
+
+<script>
+    htmx.defineExtension('hx-dataset-include', {
+        encodeParameters: function (xhr, parameters, elt) {
+            Object
+                .keys(elt.dataset)
+                .forEach(k => parameters.append(k, elt.dataset[k]))
+        }
+    })
+    htmx.config.extensions['hx-dataset-include'] = true
+</script>
+
 <body class="bg-gray-50 min-h-screen flex flex-col items-center">
 <!-- 헤더 -->
 <header class="w-full py-4 px-6">
@@ -13,6 +25,25 @@
         <div class="text-2xl font-bold text-gray-800">QR.io</div>
     </div>
 </header>
+
+
+<div class="text-sm text-gray-700 cursor-pointer"
+     hx-post="/resend-code"
+     hx-target="#resend-result"
+     hx-ext="hx-dataset-include"
+     data-email="${email}"
+     data-token="${token}"
+     hx-include="this"
+>
+    <p class="text-blue-600">
+        Resend Code
+    </p>
+
+    <p id="resend-result" class="text-gray-500">
+
+    </p>
+
+</div>
 <!-- 소셜 로그인 버튼들 -->
 <div class="flex flex-col gap-4 mt-2">
     <!-- Google 로그인 버튼 -->

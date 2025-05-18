@@ -28,7 +28,10 @@
             @endif
         </p>
 
-        <form class="" action="${url}" method="post">
+        <form class=""
+              hx-post="${url}"
+              hx-target="#main-container"
+        >
             <div class="mb-1">
                 <label for="email" class="sr-only">Email</label>
                 <div class="relative">

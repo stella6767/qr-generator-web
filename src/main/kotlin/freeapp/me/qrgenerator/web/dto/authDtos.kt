@@ -34,6 +34,11 @@ data class VerifyDto(
     val token: String,
 )
 
+data class ResendCodeDto(
+    val email: String,
+    val token: String,
+)
+
 data class SignUpResponseDto(
     val email: String,
     val expireMinute: Long,

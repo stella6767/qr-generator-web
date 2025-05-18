@@ -1,4 +1,5 @@
 
+
 function moveFocus(e, el, nextId) {
     el.value = el.value.replace(/[^0-9]/g, '');
     if (el.value && nextId) {
@@ -54,3 +55,15 @@ document.addEventListener('htmx:responseError', evt => {
     }
 
 });
+
+
+htmx.defineExtension('hx-dataset-include', {
+    encodeParameters: function (xhr, parameters, elt) {
+        Object
+            .keys(elt.dataset)
+            .forEach(k => parameters
+                .append(k, elt.dataset[k]))
+    }
+})
+
+

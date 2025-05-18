@@ -4,8 +4,8 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <script defer src="/custom.js"></script>
     <script defer src="/htmx.min.js"></script>
+    <script defer src="/custom.js"></script>
     <link href="/custom.css" rel="stylesheet">
     <link href="/output.css" rel="stylesheet">
     <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
@@ -19,6 +19,7 @@
 <div id="error-alert-container"></div>
 
 ${content}
+
 
 </body>
 </html>

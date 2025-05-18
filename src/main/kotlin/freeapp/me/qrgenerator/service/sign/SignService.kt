@@ -31,6 +31,8 @@ class SignService(
 ) {
 
     private val log = KotlinLogging.logger {}
+    private val expireMinute: Long = 10
+
 
     @Transactional(readOnly = true)
     fun loadUserByUsername(email: String): UserDetails {
@@ -87,7 +89,6 @@ class SignService(
 
         checkIsNormalEmailAddressAvailable(signUpDto.email)
 
-        val expireMinute: Long = 10
 
         val userVerify =
             userVerifyRepository.findLatestUserVerifyByEmail(signUpDto.email, LocalDateTime.now())
@@ -145,6 +146,36 @@ class SignService(
         verify.user.status = User.Status.ACTIVATED
 
         setAuthentication(verify.user, httpRequest)
+    }
+
+
+    @Transactional
+    fun resendCode(dto: ResendCodeDto): String {
+
+        val userVerify =
+            userVerifyRepository.findVerifyByUserEmailAndToken(
+                email = dto.email,
+                verifyToken = dto.token,
+            ) ?: return "email token IS UNAUTHORIZED"
+
+
+        //update
+        if (userVerify.expiredAt!!.isAfter(LocalDateTime.now())) {
+            userVerify.expiredAt = LocalDateTime.now().plusMinutes(expireMinute)
+            userVerify.code = generateVerifyCode()
+        }
+
+        val emailDto = EmailDto(
+            emailTemplate = EmailTemplate.VERIFICATION,
+            body = EmailBodyDto(
+                verificationCode = userVerify.code,
+                validityMinutes = expireMinute.toString()
+            )
+        )
+
+        mailService.sendEmailTemplate(dto.email, emailDto)
+
+        return "send success"
     }
 
 
