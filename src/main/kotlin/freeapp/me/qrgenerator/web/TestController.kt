@@ -16,8 +16,6 @@ class TestController(
     @GetMapping("/simple")
     fun sendSimpleMailMessage() {
 
-
-
         mailService.sendEmailTemplate("ㅁㄴㅇㅁㄴㅇ@naver.com", EmailDto(
             emailTemplate = EmailTemplate.VERIFICATION,
             body = EmailBodyDto()

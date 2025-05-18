@@ -12,7 +12,8 @@ data class SignUpDto(
             email = email,
             username = "",
             password = encPassword,
-            signType = User.SignType.EMAIL
+            signType = User.SignType.EMAIL,
+            status = User.Status.DEACTIVATED
         )
     }
 
@@ -21,4 +22,9 @@ data class SignUpDto(
 data class LoginDto(
     val email: String,
     val password: String
+)
+
+data class VerifyDto(
+    val code: String,
+    val token: String,
 )

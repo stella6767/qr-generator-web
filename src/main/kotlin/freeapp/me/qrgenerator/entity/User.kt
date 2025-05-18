@@ -2,12 +2,14 @@ package freeapp.me.qrgenerator.entity
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import jakarta.persistence.*
+import org.hibernate.annotations.Comment
 import java.time.LocalDateTime
 
 
 @Entity
 @Table(name = "user")
 class User(
+    status: Status,
     username: String,
     email: String,
     password: String,
@@ -31,6 +33,12 @@ class User(
     @Enumerated(EnumType.STRING)
     val signType = signType
 
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    @Comment("ACTIVATED(\"활성\"), DELETED(\"탈퇴\"), DEACTIVATED(\"비활성\")")
+    var status: Status = status
+
     @Column(name = "last_login_date")
     var lastLoginDate = lastLoginDate
 
@@ -38,6 +46,15 @@ class User(
     fun updateLastLoginDate(time: LocalDateTime = LocalDateTime.now()) {
         this.lastLoginDate = time
     }
+
+    enum class Status(
+        val displayName: String
+    ) {
+        ACTIVATED("활성"),
+        DEACTIVATED("비활성"),
+        DELETED("탈퇴"),
+    }
+
 
     enum class Role(
         val value: String
