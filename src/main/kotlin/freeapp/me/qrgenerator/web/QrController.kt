@@ -1,8 +1,10 @@
 package freeapp.me.qrgenerator.web
 
-import freeapp.me.qrgenerator.config.QrGeneratorType
+import freeapp.me.qrgenerator.web.dto.QrGeneratorType
+import freeapp.me.qrgenerator.config.UserPrincipal
 import freeapp.me.qrgenerator.service.QrService
 import io.github.wimdeblauwe.htmx.spring.boot.mvc.HxRequest
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
@@ -45,19 +47,22 @@ class QrController(
     @PostMapping("/qrcode")
     fun generateQrCode(
         model: Model,
+        @AuthenticationPrincipal principal: UserPrincipal,
         @RequestParam type: QrGeneratorType,
         @RequestParam("file") file: MultipartFile? = null,
         @RequestParam qrReqDto: HashMap<String, Any>,
     ): FragmentsRendering {
+
+
 
         val qrCode =
             qrService.generateStaticQRCodeByType(type, qrReqDto, file)
 
         println(file?.originalFilename)
 
-
         model.addAttribute("imageData", qrCode)
         model.addAttribute("isGenerated", true)
+
 
         return FragmentsRendering
             .with("component/qrImg")

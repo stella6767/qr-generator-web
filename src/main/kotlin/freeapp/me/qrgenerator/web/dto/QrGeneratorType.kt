@@ -1,4 +1,4 @@
-package freeapp.me.qrgenerator.config
+package freeapp.me.qrgenerator.web.dto
 
 //https://emojipedia.org/
 

@@ -1,11 +1,20 @@
 package freeapp.me.qrgenerator.util
 
 import java.security.SecureRandom
+import java.text.Normalizer
 import java.util.*
 
 
 private const val VERIFY_CODE_INT_LENGTH = 6
 private const val VERIFY_TOKEN_BYTES = 20
+
+
+fun generateRandomNumberString(): String {
+    return (1..10)
+        .map { (0..9).random() }
+        .joinToString("")
+}
+
 
 fun generateVerifyToken(bytesLength: Int = VERIFY_TOKEN_BYTES): String {
     val random = SecureRandom()
@@ -39,3 +48,22 @@ private fun getIntRandomString(targetStringLength: Int): String {
         }
         .toString()
 }
+
+fun addNoFromFilename(
+    name: String,
+    no: String
+): String {
+
+    return normalizeNfc("${no}$customDelimiter${name}")
+}
+
+
+
+private fun normalizeNfc(unNormalMailBoxName: String): String {
+    return if (!Normalizer.isNormalized(unNormalMailBoxName, Normalizer.Form.NFC)) {
+        Normalizer.normalize(unNormalMailBoxName, Normalizer.Form.NFC)
+    } else unNormalMailBoxName
+}
+
+
+
