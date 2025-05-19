@@ -1,3 +1,4 @@
+@import freeapp.me.qrgenerator.entity.User
 @import freeapp.me.qrgenerator.web.dto.UserResponseDto
 
 @param UserResponseDto currentUser
@@ -21,11 +22,23 @@
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="password">
                     비밀번호 *
                 </label>
-                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-                       id="password" type="password" name="password" placeholder="비밀번호를 입력해주세요." required>
-                <p class="text-xs text-gray-600">
-                    (영문 대/소문자, 숫자, 특수문자를 입력하세요. 특수문자 경우 !@#$%^&*()-_=+만 사용 가능)
-                </p>
+
+                @if(currentUser.getSignType() == User.SignType.EMAIL)
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+                           id="password" type="password" name="password" placeholder="비밀번호를 입력해주세요." required>
+
+                    <div class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        <p class="text-xs text-gray-600">
+                            (영문 대/소문자, 숫자, 특수문자를 입력하세요. 특수문자 경우 !@#$%^&*()-_=+만 사용 가능)
+                        </p>
+                    </div>
+
+                @else
+                    <p class="text-xs text-gray-600">
+                        (social 회원가입 유저는 비밀번호를 지원하지 않습니다)
+                    </p>
+                @endif
+
             </div>
 
             <div class="mb-4">
