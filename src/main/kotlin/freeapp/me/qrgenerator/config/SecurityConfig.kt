@@ -1,5 +1,6 @@
 package freeapp.me.qrgenerator.config
 
+import freeapp.me.qrgenerator.entity.User
 import freeapp.me.qrgenerator.repo.UserRepository
 import freeapp.me.qrgenerator.service.sign.OAuth2SignService
 import freeapp.me.qrgenerator.service.sign.SignService
@@ -155,7 +156,7 @@ class SecurityConfig(
             authException: AuthenticationException
         ) {
             // 인증되지 않은 경우 페이지 이동 시 사용
-            response.sendRedirect("/v1")
+            response.sendRedirect("/")
             // 인증되지 않은 경우 에러코드 반환 시 사용
             //response.sendError(HttpServletResponse.SC_UNAUTHORIZED)
             //resolver.resolveException(request, response, null, authException)
@@ -206,15 +207,9 @@ class SecurityConfig(
 
             log.info("login success, ${request.requestURI} ")
 
-//            if (principal.user.role == User.Role.CLIENT) {
-//                response.sendRedirect("/v1/task")
-//            } else {
-//                response.sendRedirect("/v1/admin/tasks")
-//            }
-
-            response.sendRedirect("/v1/admin/tasks")
-
-            //response.writer.write("")
+            if (principal.user.role == User.Role.USER) {
+                response.sendRedirect("/")
+            }
 
         }
     }

@@ -52,7 +52,13 @@ gg:
   jte:
     developmentMode: true
 
-
+logging:
+  level:
+    root: info
+    org:
+      springframework:
+        security:
+          oauth2: debug
 ---
 
 server:

@@ -48,6 +48,7 @@ class SignService(
         }
 
         setAuthentication(user, httpRequest)
+        user.updateLastLoginDate()
     }
 
     private fun setAuthentication(user: User, httpRequest: HttpServletRequest) {

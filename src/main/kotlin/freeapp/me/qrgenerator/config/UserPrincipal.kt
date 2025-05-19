@@ -16,8 +16,14 @@ class UserPrincipal(
 
     override fun getName(): String {
         //OAuth2 인증 과정에서 사용자를 고유하게 식별하는 데 사용
-        return user.socialId ?: user.id.toString()
+        return return user.socialId ?: user.id.toString()
     }
+
+    override fun getUsername(): String {
+        //OAuth2 인증 과정에서 사용자를 고유하게 식별하는 데 사용, 이게 진짜
+        return user.id.toString()
+    }
+
 
     override fun getAttributes(): MutableMap<String, Any> {
         return attributes
@@ -31,9 +37,6 @@ class UserPrincipal(
         return user.password
     }
 
-    override fun getUsername(): String? {
-        return user.username
-    }
 
     override fun isAccountNonExpired(): Boolean {
         return true
@@ -52,9 +55,8 @@ class UserPrincipal(
     }
 
     override fun toString(): String {
-        return "UserPrincipal(user=$user, customAuthorities=$authorities)"
+        return "UserPrincipal(user=$user, name=${this.name} customAuthorities=$authorities)"
     }
-
 
 
 
