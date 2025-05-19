@@ -1,6 +1,7 @@
 package freeapp.me.qrgenerator.web.dto
 
 import freeapp.me.qrgenerator.entity.User
+import org.springframework.web.multipart.MultipartFile
 
 data class UserResponseDto(
     val username: String,
@@ -23,3 +24,10 @@ data class UserResponseDto(
     }
 
 }
+
+
+data class UpdateProfileDto(
+    val password: String,
+    val username: String,
+
+)

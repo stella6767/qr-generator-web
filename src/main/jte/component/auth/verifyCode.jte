@@ -27,7 +27,6 @@
 
             <form hx-post="/verify-code"
                   hx-trigger="verify-code"
-                  hx-target="#result"
                   hx-swap="none"
                   hx-on--after-request="if(event.detail.successful) {
                             location.reload()

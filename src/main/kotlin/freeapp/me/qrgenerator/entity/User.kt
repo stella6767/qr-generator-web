@@ -9,11 +9,12 @@ import java.time.LocalDateTime
 @Entity
 @Table(name = "user")
 class User(
-    socialId:String? = null,
+    socialId: String? = null,
     status: Status,
     username: String,
     email: String,
     password: String,
+    deleteReason: String = "",
     role: Role = Role.USER,
     signType: SignType,
     lastLoginDate: LocalDateTime? = null,
@@ -23,13 +24,13 @@ class User(
     var socialId: String? = socialId
 
     @Column(nullable = false)
-    val username = username
+    var username = username
 
     @Column(nullable = false, length = 100)
     val email = email
 
     @Column(nullable = false, length = 100)
-    val password = password
+    var password = password
 
     @Enumerated(EnumType.STRING)
     val role = role
@@ -40,20 +41,35 @@ class User(
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    @Comment("ACTIVATED(\"활성\"), DELETED(\"탈퇴\"), DEACTIVATED(\"비활성\")")
+    @Comment("PENDING(\"화원가입 진행 중\"), ACTIVATED(\"활성\"), DELETED(\"탈퇴\"), DEACTIVATED(\"비활성\")")
     var status: Status = status
 
     @Column(name = "last_login_date")
     var lastLoginDate = lastLoginDate
+
+    @Column(name = "delete_reason", length = 500)
+    var deleteReason = deleteReason
 
 
     fun updateLastLoginDate(time: LocalDateTime = LocalDateTime.now()) {
         this.lastLoginDate = time
     }
 
+
+    fun delete(reason: String) {
+        this.status = Status.DELETED
+        this.deleteReason = reason
+    }
+
+    fun update(username: String, encPassword: String) {
+        this.username = username
+        this.password = encPassword
+    }
+
     enum class Status(
         val displayName: String
     ) {
+        PENDING("화원가입 진행 중"),
         ACTIVATED("활성"),
         DEACTIVATED("비활성"),
         DELETED("탈퇴"),

@@ -15,7 +15,8 @@ class UserPrincipal(
 ) : UserDetails, OAuth2User {
 
     override fun getName(): String {
-        return user.username
+        //OAuth2 인증 과정에서 사용자를 고유하게 식별하는 데 사용
+        return user.socialId ?: user.id.toString()
     }
 
     override fun getAttributes(): MutableMap<String, Any> {

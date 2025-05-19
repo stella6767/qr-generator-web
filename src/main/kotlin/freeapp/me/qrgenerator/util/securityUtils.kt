@@ -9,19 +9,14 @@ fun getCurrentUser(): UserResponseDto? {
         val auth =
             SecurityContextHolder.getContext().authentication
 
-        println(auth.isAuthenticated)
-        println(auth.principal)
-
         if (auth != null && auth.isAuthenticated &&
             auth.principal != "anonymousUser" &&
             auth.principal is UserPrincipal
         ) {
             println("User not found")
-
             val userPrincipal = auth.principal as UserPrincipal
             return UserResponseDto.fromEntity(userPrincipal.user)
         }
-        println("User not found")
 
     } catch (e: Exception) {
         println("사용자 정보 가져오기 실패: ${e.message}")
@@ -31,7 +26,14 @@ fun getCurrentUser(): UserResponseDto? {
 
 fun isLoggedIn(): Boolean {
 
-    println("?????")
-
     return getCurrentUser() != null
 }
+
+
+fun clearSecurityContext() {
+    val context =
+        SecurityContextHolder.getContext()
+    context.authentication = null
+    SecurityContextHolder.clearContext()
+}
+

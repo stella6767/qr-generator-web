@@ -18,7 +18,7 @@ data class SignUpDto(
             username = "",
             password = encPassword,
             signType = User.SignType.EMAIL,
-            status = User.Status.DEACTIVATED
+            status = User.Status.PENDING
         )
     }
 
@@ -46,6 +46,9 @@ data class SignUpResponseDto(
 )
 
 
+data class UserDeleteRequestDto(
+    val reason: String,
+)
 
 
 interface OAuth2UserInfo {

@@ -1,102 +1,53 @@
 package freeapp.me.qrgenerator.web
 
 import freeapp.me.qrgenerator.config.UserPrincipal
-import freeapp.me.qrgenerator.service.sign.SignService
-import freeapp.me.qrgenerator.web.dto.LoginDto
-import freeapp.me.qrgenerator.web.dto.ResendCodeDto
-import freeapp.me.qrgenerator.web.dto.SignUpDto
-import freeapp.me.qrgenerator.web.dto.VerifyDto
+import freeapp.me.qrgenerator.service.UserService
+import freeapp.me.qrgenerator.web.dto.UpdateProfileDto
+import freeapp.me.qrgenerator.web.dto.UserDeleteRequestDto
 import io.github.wimdeblauwe.htmx.spring.boot.mvc.HtmxRedirectView
-import io.github.wimdeblauwe.htmx.spring.boot.mvc.HtmxResponse
+import io.github.wimdeblauwe.htmx.spring.boot.mvc.HtmxRefreshView
 import io.github.wimdeblauwe.htmx.spring.boot.mvc.HxRequest
-import jakarta.servlet.http.HttpServletRequest
-import jakarta.validation.Valid
-import org.springframework.security.authentication.AuthenticationManager
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.ResponseBody
+import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.PutMapping
+
 
 @Controller
 class UserController(
-    private val signService: SignService,
+    private val userService: UserService,
 ) {
 
-
-    @GetMapping("/sign-up")
-    fun signUpPage(
-        model: Model,
-    ): String {
-        model.addAttribute("isSignUp", true)
-        return "page/sign"
-    }
-
-    @GetMapping("/login")
-    fun loginPage(
-        model: Model,
-    ): String {
-        model.addAttribute("isSignUp", false)
-        return "page/sign"
-    }
-
-
     @HxRequest
-    @PostMapping("/login")
-    fun login(
-        model: Model,
-        loginDto: LoginDto,
-        httpRequest: HttpServletRequest,
+    @DeleteMapping("/user")
+    fun deleteUser(
+        @AuthenticationPrincipal principal: UserPrincipal,
+        deleteRequestDto: UserDeleteRequestDto,
     ): HtmxRedirectView {
 
-        signService.login(loginDto, httpRequest)
-
+        userService.deleteUser(
+            principal.user.id,
+            deleteRequestDto
+        )
         return HtmxRedirectView("/")
     }
 
 
     @HxRequest
-    @PostMapping("/sign-up")
-    fun signUp(
+    @PutMapping("/user")
+    fun updateUser(
+        @AuthenticationPrincipal principal: UserPrincipal,
+        profileDto: UpdateProfileDto,
         model: Model,
-        @Valid signUpDto: SignUpDto,
-        htmxResponse: HtmxResponse
-    ): String {
+    ): HtmxRefreshView {
 
-        val dto = signService.signUp(signUpDto)
+        val user =
+            userService.updateUser(principal.user.id, profileDto)
 
-        model.addAttribute("email", dto.email)
-        model.addAttribute("token", dto.token)
-        model.addAttribute("expireMinute", dto.expireMinute)
+        //model.addAttribute("user", user)
 
-        return "component/auth/verifyCode"
-    }
-
-
-    @PostMapping("/verify-code")
-    fun verify(
-        model: Model,
-        verifyDto: VerifyDto,
-        httpRequest: HttpServletRequest
-    ): String {
-
-        signService.signUpWithEmailVerify(verifyDto, httpRequest)
-
-        return "page/index"
-    }
-
-
-    @ResponseBody
-    @PostMapping("/resend-code")
-    fun resendCode(
-        model: Model,
-        resendCodeDto: ResendCodeDto,
-        httpRequest: HttpServletRequest
-    ): String {
-
-        return signService.resendCode(resendCodeDto)
+        return HtmxRefreshView()
     }
 
 

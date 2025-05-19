@@ -31,6 +31,7 @@
         <form class=""
               hx-post="${url}"
               hx-target="#main-container"
+              hx-disable-elt="#submit-btn"
         >
             <div class="mb-1">
                 <label for="email" class="sr-only">Email</label>
@@ -65,6 +66,7 @@
             </div>
 
             <button
+                    id="submit-btn"
                     type="submit"
                     class="cursor-pointer w-full bg-emerald-500 text-white py-3 rounded-md hover:bg-emerald-600 transition duration-200 mb-6 mt-4"
             >
@@ -73,6 +75,7 @@
                 @else
                     Log in
                 @endif
+                @template.component.loadingSpinner()
             </button>
         </form>
 

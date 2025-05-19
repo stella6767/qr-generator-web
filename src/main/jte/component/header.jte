@@ -18,6 +18,15 @@
     </a>
     <div>
         @if(SecurityUtilsKt.isLoggedIn())
+
+            <a href="/profile">
+                <button type="button"
+                        class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium cursor-pointer
+                    rounded-lg border border-transparent bg-blue-500 text-white hover:bg-[#b4b4b480] focus:outline-hidden focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none">
+                    profile
+                </button>
+            </a>
+
             <a href="/logout">
                 <button type="button"
                         class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium cursor-pointer

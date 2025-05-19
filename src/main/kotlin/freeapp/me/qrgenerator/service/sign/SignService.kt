@@ -33,20 +33,6 @@ class SignService(
     private val log = KotlinLogging.logger {}
     private val expireMinute: Long = 10
 
-
-    @Transactional(readOnly = true)
-    fun loadUserByUsername(email: String): UserDetails {
-
-        log.info("로그인 요청: $email")
-
-        val user = userRepository.findActiveUserByEmailAndSignType(
-            email, User.SignType.EMAIL
-        ) ?: throw UsernameNotFoundException("사용자를 찾을 수 없거나 계정이 활성화되지 않았습니다: $email")
-
-        return UserPrincipal(user)
-    }
-
-
     @Transactional
     fun login(
         loginDto: LoginDto,
@@ -89,7 +75,6 @@ class SignService(
 
         checkIsNormalEmailAddressAvailable(signUpDto.email)
 
-
         val userVerify =
             userVerifyRepository.findLatestUserVerifyByEmail(signUpDto.email, LocalDateTime.now())
                 ?: run {
@@ -114,7 +99,6 @@ class SignService(
         )
 
         mailService.sendEmailTemplate(signUpDto.email, emailDto)
-
 
         return SignUpResponseDto(
             signUpDto.email,
@@ -156,7 +140,7 @@ class SignService(
             userVerifyRepository.findVerifyByUserEmailAndToken(
                 email = dto.email,
                 verifyToken = dto.token,
-            ) ?: return "email token IS UNAUTHORIZED"
+            ) ?: return "send failure"
 
 
         //update

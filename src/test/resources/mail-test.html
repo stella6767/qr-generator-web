@@ -1,110 +1,126 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${appName} 인증 코드</title>
-    <style>
-        body {
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f5f5f5;
-            color: #333333;
-        }
-        .email-container {
-            max-width: 600px;
-            margin: 0 auto;
-            background-color: #ffffff;
-        }
-        .email-header {
-            background-color: #000000;
-            padding: 20px;
-            text-align: left;
-        }
-        .email-header {
-            height: 20px;
-            text-align: center;
-        }
-        .email-body {
-            padding: 40px 30px;
-        }
-        .email-footer {
-            padding: 20px 30px;
-            background-color: #f7f7f7;
-            color: #777777;
-            font-size: 12px;
-            line-height: 1.5;
-        }
-        h1 {
-            font-size: 24px;
-            font-weight: 700;
-            margin-top: 0;
-            margin-bottom: 15px;
-        }
-        p {
-            font-size: 16px;
-            line-height: 1.5;
-            margin: 0 0 20px;
-        }
-        .verification-code {
-            font-family: monospace;
-            font-size: 32px;
-            font-weight: 700;
-            letter-spacing: 4px;
-            color: #000000;
-            padding: 20px 0;
-            text-align: center;
-        }
-        .expiry-note {
-            font-size: 14px;
-            color: #777777;
-            margin-top: 30px;
-        }
-        .help-text {
-            font-size: 14px;
-            color: #777777;
-            border-top: 1px solid #eaeaea;
-            padding-top: 20px;
-            margin-top: 40px;
-        }
-        .footer-links {
-            margin-top: 10px;
-        }
-        .footer-links a {
-            color: #777777;
-            text-decoration: underline;
-        }
-    </style>
+    <title>Choose Plan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-<div class="email-container">
-    <div class="email-header">
-        <!-- 로고 이미지는 실제 이미지 URL로 대체해야 합니다 -->
-        QR Generator
+<body class="bg-gray-50 min-h-screen flex items-center justify-center">
+<div class="container mx-auto px-4 py-12 max-w-5xl">
+    <!-- 헤더 -->
+    <div class="text-center mb-10">
+        <h1 class="text-4xl font-bold text-gray-800 mb-4">Choose Plan</h1>
+        <p class="text-gray-600">Choose the plan that best suits you</p>
     </div>
 
-    <div class="email-body">
+    <!-- 요금제 카드 컨테이너 -->
+    <div class="grid md:grid-cols-2 gap-8">
+        <!-- 월간 요금제 카드 -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden border border-emerald-500">
+            <div class="bg-emerald-500 py-3 text-center text-white font-semibold">
+                MOST POPULAR
+            </div>
 
-        <p>아래 인증 코드를 로그인 화면에 입력하여 계정 인증을 완료해 주세요.</p>
+            <div class="p-8">
+                <div class="mb-6">
+                    <div class="flex items-baseline">
+                        <span class="text-gray-500 mr-2">USD $</span>
+                        <span class="text-5xl font-bold text-gray-800">35</span>
+                        <span class="text-gray-500 ml-1">/Unlimited QR Codes</span>
+                    </div>
+                    <p class="text-gray-600 mt-2">Billed every month</p>
+                </div>
 
-        <div class="verification-code">
-            ${verificationCode}
+                <button class="w-full bg-emerald-500 hover:bg-emerald-600 text-white py-3 px-4 rounded-md font-medium flex justify-center items-center transition-colors duration-300 mb-8">
+                    Choose Plan
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                </button>
+
+                <!-- 기능 목록 -->
+                <ul class="space-y-3">
+                    <li class="flex items-start">
+                        <svg class="h-5 w-5 text-emerald-500 mr-2 mt-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                        </svg>
+                        <span>Unlimited QR Codes</span>
+                    </li>
+                    <li class="flex items-start">
+                        <svg class="h-5 w-5 text-emerald-500 mr-2 mt-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                        </svg>
+                        <span>upload 50MB exceed File</span>
+                    </li>
+                    <li class="flex items-start">
+                        <svg class="h-5 w-5 text-emerald-500 mr-2 mt-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                        </svg>
+                        <span>Dynamic & Static QR Codes</span>
+                    </li>
+                    <li class="flex items-start">
+                        <svg class="h-5 w-5 text-emerald-500 mr-2 mt-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                        </svg>
+                        <span>7-day money back guarantee</span>
+                    </li>
+                </ul>
+            </div>
         </div>
 
-        <p class="expiry-note">
-            이 인증 코드는 ${validityMinutes} 분 동안만 유효합니다.
-        </p>
+        <!-- 연간 요금제 카드 -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden border">
+            <div class="p-8 pt-10">
+                <div class="mb-6">
+                    <div class="flex items-baseline">
+                        <span class="text-gray-500 mr-2">USD $</span>
+                        <span class="text-5xl font-bold text-gray-800">350</span>
+                        <span class="text-gray-500 ml-1">/Unlimited QR Codes</span>
+                    </div>
+                    <div class="flex items-center mt-2">
+                        <span class="text-gray-600 mr-2">12 months</span>
+                        <span class="bg-green-100 text-green-600 px-2 py-1 rounded text-sm">2 months FREE</span>
+                    </div>
+                </div>
 
-        <div class="help-text">
-            <p>본인이 요청하지 않았다면, 누군가 실수로 귀하의 이메일 주소를 입력했을 수 있습니다. 이 경우 아무 조치도 취하지 않으셔도 됩니다.</p>
+                <button class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-md font-medium flex justify-center items-center transition-colors duration-300 mb-8">
+                    Choose Plan
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                </button>
+
+                <!-- 기능 목록 -->
+                <ul class="space-y-3">
+                    <li class="flex items-start">
+                        <svg class="h-5 w-5 text-emerald-500 mr-2 mt-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                        </svg>
+                        <span>Unlimited QR Codes</span>
+                    </li>
+                    <li class="flex items-start">
+                        <svg class="h-5 w-5 text-emerald-500 mr-2 mt-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                        </svg>
+                        <span>upload 50MB exceed File</span>
+                    </li>
+                    <li class="flex items-start">
+                        <svg class="h-5 w-5 text-emerald-500 mr-2 mt-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                        </svg>
+                        <span>Dynamic & Static QR Codes</span>
+                    </li>
+                    <li class="flex items-start">
+                        <svg class="h-5 w-5 text-emerald-500 mr-2 mt-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                        </svg>
+                        <span>7-day money back guarantee</span>
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
-
-    <div class="email-footer">
-        <p>본 이메일은 발신 전용이므로 회신하실 수 없습니다.</p>
-    </div>
-
 </div>
 </body>
 </html>

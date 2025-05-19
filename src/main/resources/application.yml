@@ -21,6 +21,12 @@ spring:
   profiles:
     default: dev
 
+gg:
+  jte:
+    templateLocation: src/main/jte
+    templateSuffix: .jte
+
+
 ---
 
 server:
@@ -40,12 +46,10 @@ spring:
       enabled: true
     restart:
       poll-interval: 5s
-      enabled: false
+      enabled: true
 
 gg:
   jte:
-    templateLocation: src/main/jte
-    templateSuffix: .jte
     developmentMode: true
 
 
