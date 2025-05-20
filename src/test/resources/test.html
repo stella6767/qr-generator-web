@@ -1,106 +1,445 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
-    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
-    <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>실시간 미리보기 페이지 (HTMX 연동 고려)</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .preview-container {
+            width: 375px;
+            min-height: 667px;
+            border: 1px solid #e2e8f0;
+            overflow-y: auto;
+            background-color: #feb944;
+        }
+        .template-selected {
+            border: 2px solid #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+        }
+        .social-icon-button {
+            transition: transform 0.1s ease-in-out;
+        }
+        .social-icon-button:hover {
+            transform: scale(1.1);
+        }
+        .added-social-input .up-arrow, .added-social-input .down-arrow { display: none; } /* 기본적으로 숨김 */
+        .added-social-input:hover .up-arrow, .added-social-input:hover .down-arrow { display: inline-flex; } /* 호버 시 표시 */
+    </style>
 </head>
+<body class="bg-gray-100 flex flex-col lg:flex-row p-4 lg:p-8 min-h-screen">
+
+<div class="lg:w-3/5 bg-white p-6 rounded-lg shadow-lg mr-0 lg:mr-8 mb-8 lg:mb-0">
+    <h1 class="text-3xl font-bold mb-6 text-gray-800">정보 입력</h1>
+
+    <div class="mb-8">
+        <h2 class="text-xl font-semibold mb-3 text-gray-700">템플릿 선택</h2>
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+            <div id="template1" class="border p-4 rounded-md hover:shadow-md cursor-pointer template-selected" onclick="selectTemplate(this, 'template1_preview.html')">
+                <img src="https://via.placeholder.com/150/0000FF/808080?Text=Template1" alt="템플릿 1" class="w-full h-auto rounded mb-2">
+                <p class="text-center text-sm text-gray-600">기본 정보형</p>
+            </div>
+            <div id="template2" class="border p-4 rounded-md hover:shadow-md cursor-pointer" onclick="selectTemplate(this, 'template2_preview.html')">
+                <img src="https://via.placeholder.com/150/FF0000/FFFFFF?Text=Template2" alt="템플릿 2" class="w-full h-auto rounded mb-2">
+                <p class="text-center text-sm text-gray-600">이미지 강조형</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="mb-6">
+        <h3 class="text-lg font-medium mb-2 text-gray-700">페이지 배경색</h3>
+        <div class="flex space-x-2 mb-2">
+            <button class="w-8 h-8 rounded-full bg-white border" onclick="updatePreviewStyle('backgroundColor', '#ffffff')"></button>
+            <button class="w-8 h-8 rounded-full bg-gray-200" onclick="updatePreviewStyle('backgroundColor', '#e5e7eb')"></button>
+            <button class="w-8 h-8 rounded-full bg-yellow-300" onclick="updatePreviewStyle('backgroundColor', '#fcd34d')"></button>
+            <button class="w-8 h-8 rounded-full bg-blue-300" onclick="updatePreviewStyle('backgroundColor', '#93c5fd')"></button>
+        </div>
+        <div>
+            <label for="customColorInput" class="block text-sm font-medium text-gray-700">커스텀 배경색</label>
+            <input type="text" id="customColorInput" value="#feb944" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 mt-1" oninput="updatePreviewStyle('backgroundColor', this.value)">
+        </div>
+    </div>
+
+    <div>
+        <h3 class="text-lg font-medium mb-2 text-gray-700">표시 정보</h3>
+        <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+            <div class="sm:col-span-6">
+                <label for="businessName" class="block text-sm font-medium text-gray-700">비즈니스명</label>
+                <input type="text" name="businessName" id="businessName" value="Grand Burger" class="mt-1 p-2 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" data-preview-target="#previewBusinessName" oninput="updatePreviewContent(this)">
+            </div>
+
+            <div class="sm:col-span-6">
+                <label for="businessImageInput" class="block text-sm font-medium text-gray-700">비즈니스 이미지</label>
+                <div class="mt-1 flex items-center">
+                        <span class="inline-block h-12 w-12 rounded-md overflow-hidden bg-gray-100">
+                            <img id="imagePreview" src="https://via.placeholder.com/100x100.png?text=Logo" alt="로고 미리보기" class="h-full w-full object-cover">
+                        </span>
+                    <input type="file" id="businessImageInput" class="hidden" accept="image/*" onchange="previewImage(this, '#imagePreview', '#previewBusinessImage')">
+                    <button type="button" onclick="document.getElementById('businessImageInput').click()" class="ml-5 bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50">
+                        파일 선택
+                    </button>
+                    <button type="button" onclick="deleteImage('#imagePreview', '#previewBusinessImage', 'businessImageInput')" class="ml-2 bg-red-500 text-white py-2 px-3 rounded-md shadow-sm text-sm font-medium hover:bg-red-600">
+                        삭제
+                    </button>
+                </div>
+            </div>
+
+            <div class="sm:col-span-6">
+                <label for="businessDescription" class="block text-sm font-medium text-gray-700">비즈니스 설명</label>
+                <textarea id="businessDescription" name="businessDescription" rows="3" class="mt-1 p-2 shadow-sm block w-full sm:text-sm border border-gray-300 rounded-md" data-preview-target="#previewBusinessDescription" oninput="updatePreviewContent(this)">American Food restaurant. They call us best burger in town for a reason :)</textarea>
+            </div>
+
+            <div class="sm:col-span-3">
+                <label for="phoneNumber" class="block text-sm font-medium text-gray-700">전화번호</label>
+                <input type="text" name="phoneNumber" id="phoneNumber" value="+1 222 222 2222" class="mt-1 p-2 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" data-preview-target="#previewPhoneNumber" oninput="updatePreviewContent(this)">
+            </div>
+
+            <div class="sm:col-span-3">
+                <label for="emailAddress" class="block text-sm font-medium text-gray-700">이메일 주소</label>
+                <input type="email" name="emailAddress" id="emailAddress" value="support@example.com" class="mt-1 p-2 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" data-preview-target="#previewEmailAddress" oninput="updatePreviewContent(this)">
+            </div>
+
+            <div class="sm:col-span-6">
+                <label for="website" class="block text-sm font-medium text-gray-700">웹사이트</label>
+                <input type="url" name="website" id="website" value="https://example.com" class="mt-1 p-2 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" data-preview-target="#previewWebsite" oninput="updatePreviewContent(this, true)">
+            </div>
+
+            <div class="sm:col-span-6">
+                <h4 class="text-md font-medium text-gray-700 mb-2 mt-4">주소</h4>
+            </div>
+            <div class="sm:col-span-6">
+                <label for="fullAddress" class="block text-sm font-medium text-gray-700">전체 주소</label>
+                <input type="text" name="fullAddress" id="fullAddress" value="Bella Vista, Seattle, Washington 98109, United States" class="mt-1 p-2 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" data-preview-target="#previewFullAddress" oninput="updatePreviewContent(this)">
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-8">
+        <h3 class="text-xl font-semibold mb-1 text-gray-700">소셜 미디어 링크</h3>
+        <p class="text-sm text-gray-500 mb-4">아이콘을 클릭하여 링크 입력 필드를 추가하세요.</p>
+
+        <div id="addedSocialLinksContainer" class="space-y-3 mb-6">
+            <div class="p-3 border rounded-md bg-gray-50 added-social-input" data-social-type="linkedin">
+                <div class="flex justify-between items-center mb-2">
+                    <label class="flex items-center text-sm font-medium text-gray-700">
+                        <i class="fab fa-linkedin w-5 h-5 mr-2 text-blue-700"></i> LinkedIn
+                    </label>
+                    <div>
+                        <button type="button" class="text-gray-400 hover:text-gray-600 p-1 up-arrow" title="위로 이동" onclick="moveSocialInput(this.closest('.added-social-input'), 'up')">
+                            <i class="fas fa-arrow-up"></i>
+                        </button>
+                        <button type="button" class="text-gray-400 hover:text-gray-600 p-1 down-arrow" title="아래로 이동" onclick="moveSocialInput(this.closest('.added-social-input'), 'down')">
+                            <i class="fas fa-arrow-down"></i>
+                        </button>
+                        <button type="button" class="text-red-500 hover:text-red-700 p-1 ml-2" title="삭제" onclick="removeSocialInput(this.closest('.added-social-input'))">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                </div>
+                <input type="url" name="social_linkedin" placeholder="https://linkedin.com/in/yourprofile" class="p-2 shadow-sm block w-full sm:text-sm border-gray-300 rounded-md" data-preview-target-social="linkedin" oninput="updatePreviewSocial(this)">
+            </div>
+        </div>
+
+        <h4 class="text-lg font-medium text-gray-700 mb-2">Add more links</h4>
+        <div class="grid grid-cols-5 sm:grid-cols-8 md:grid-cols-10 gap-3">
+            <button type="button" class="social-icon-button p-2 border rounded-md hover:bg-gray-100" onclick="addSocialLinkInput('facebook', 'Facebook', 'fab fa-facebook-f', 'blue-600')" title="Facebook">
+                <i class="fab fa-facebook-f fa-2x text-blue-600"></i>
+            </button>
+            <button type="button" class="social-icon-button p-2 border rounded-md hover:bg-gray-100" onclick="addSocialLinkInput('twitter', 'X (Twitter)', 'fab fa-twitter', 'black')" title="X (Twitter)">
+                <i class="fab fa-twitter fa-2x text-black"></i>
+            </button>
+            <button type="button" class="social-icon-button p-2 border rounded-md hover:bg-gray-100" onclick="addSocialLinkInput('linkedin', 'LinkedIn', 'fab fa-linkedin-in', 'blue-700')" title="LinkedIn">
+                <i class="fab fa-linkedin-in fa-2x text-blue-700"></i>
+            </button>
+            <button type="button" class="social-icon-button p-2 border rounded-md hover:bg-gray-100" onclick="addSocialLinkInput('youtube', 'YouTube', 'fab fa-youtube', 'red-600')" title="YouTube">
+                <i class="fab fa-youtube fa-2x text-red-600"></i>
+            </button>
+            <button type="button" class="social-icon-button p-2 border rounded-md hover:bg-gray-100" onclick="addSocialLinkInput('instagram', 'Instagram', 'fab fa-instagram', 'pink-600')" title="Instagram">
+                <i class="fab fa-instagram fa-2x text-pink-600"></i>
+            </button>
+            <button type="button" class="social-icon-button p-2 border rounded-md hover:bg-gray-100" onclick="addSocialLinkInput('pinterest', 'Pinterest', 'fab fa-pinterest-p', 'red-700')" title="Pinterest">
+                <i class="fab fa-pinterest-p fa-2x text-red-700"></i>
+            </button>
+            <button type="button" class="social-icon-button p-2 border rounded-md hover:bg-gray-100" onclick="addSocialLinkInput('snapchat', 'Snapchat', 'fab fa-snapchat-ghost', 'yellow-400')" title="Snapchat">
+                <i class="fab fa-snapchat-ghost fa-2x text-yellow-400"></i>
+            </button>
+            <button type="button" class="social-icon-button p-2 border rounded-md hover:bg-gray-100" onclick="addSocialLinkInput('tiktok', 'TikTok', 'fab fa-tiktok', 'black')" title="TikTok">
+                <i class="fab fa-tiktok fa-2x text-black"></i>
+            </button>
+            <button type="button" class="social-icon-button p-2 border rounded-md hover:bg-gray-100" onclick="addSocialLinkInput('skype', 'Skype', 'fab fa-skype', 'blue-500')" title="Skype">
+                <i class="fab fa-skype fa-2x text-blue-500"></i>
+            </button>
+            <button type="button" class="social-icon-button p-2 border rounded-md hover:bg-gray-100" onclick="addSocialLinkInput('dribbble', 'Dribbble', 'fab fa-dribbble', 'pink-500')" title="Dribbble">
+                <i class="fab fa-dribbble fa-2x text-pink-500"></i>
+            </button>
+        </div>
+    </div>
+
+</div>
+
+<div class="lg:w-2/5 flex flex-col items-center sticky top-8 self-start">
+    <div class="bg-gray-700 text-white px-4 py-2 rounded-t-lg w-full max-w-sm text-sm text-center">
+        Preview Page
+    </div>
+    <div class="preview-container shadow-lg rounded-b-lg p-6 max-w-sm w-full" id="previewArea">
+        <div class="text-center mb-6">
+            <img id="previewBusinessImage" src="https://via.placeholder.com/120x120.png?text=Logo" alt="로고" class="w-24 h-24 mx-auto rounded-full object-cover mb-4 shadow-md">
+            <h2 id="previewBusinessName" class="text-2xl font-bold text-gray-800">Grand Burger</h2>
+            <p id="previewBusinessDescription" class="text-sm text-gray-600 mt-1">American Food restaurant. They call us best burger in town for a reason :)</p>
+        </div>
+
+        <div class="space-y-3 text-sm">
+            <div id="previewPhoneNumberSection" class="flex items-center">
+                <i class="fas fa-phone-alt w-5 h-5 text-gray-600 mr-2"></i>
+                <span id="previewPhoneNumber" class="text-gray-700">+1 222 222 2222</span>
+            </div>
+            <div id="previewEmailAddressSection" class="flex items-center">
+                <i class="fas fa-envelope w-5 h-5 text-gray-600 mr-2"></i>
+                <span id="previewEmailAddress" class="text-gray-700">support@example.com</span>
+            </div>
+            <div id="previewWebsiteSection" class="flex items-center">
+                <i class="fas fa-link w-5 h-5 text-gray-600 mr-2"></i>
+                <a id="previewWebsite" href="https://example.com" target="_blank" class="text-blue-600 hover:underline">https://example.com</a>
+            </div>
+            <div id="previewFullAddressSection" class="flex items-start">
+                <i class="fas fa-map-marker-alt w-5 h-5 text-gray-600 mr-2 mt-1 flex-shrink-0"></i>
+                <span id="previewFullAddress" class="text-gray-700">Bella Vista, Seattle, Washington 98109, United States</span>
+            </div>
+        </div>
+
+        <div id="previewSocialMediaLinks" class="mt-6 pt-4 border-t border-gray-200 space-y-2 text-sm">
+        </div>
+    </div>
+</div>
 
 <script>
-    htmx.defineExtension('hx-dataset-include', {
-        encodeParameters: function (xhr, parameters, elt) {
-            Object
-                .keys(elt.dataset)
-                .forEach(k => parameters.append(k, elt.dataset[k]))
+    // 1. 미리보기 내용 업데이트 (텍스트 및 링크) - 이전과 동일
+    function updatePreviewContent(inputElement, isLink = false) {
+        const targetSelector = inputElement.dataset.previewTarget;
+        const targetElement = document.querySelector(targetSelector);
+        if (targetElement) {
+            const value = inputElement.value;
+            const sectionSelector = targetSelector + "Section";
+            const sectionElement = document.querySelector(sectionSelector);
+
+            if (isLink) {
+                targetElement.textContent = value || inputElement.placeholder || "링크 없음";
+                targetElement.href = value && (value.startsWith('http://') || value.startsWith('https://')) ? value : '#';
+                if (sectionElement) sectionElement.style.display = value ? 'flex' : 'none';
+            } else {
+                targetElement.textContent = value || inputElement.placeholder || "내용 없음";
+                if (sectionElement) sectionElement.style.display = value ? (value.trim() !== '' ? 'flex' : 'none') : 'none';
+            }
+
+            if (!value && inputElement.id === 'businessName') targetElement.textContent = '비즈니스명';
+            if (!value && inputElement.id === 'businessDescription') targetElement.textContent = '비즈니스 설명';
         }
-    })
-    htmx.config.extensions['hx-dataset-include'] = true
+    }
+
+    // 2. 이미지 미리보기 및 삭제 - 이전과 동일
+    function previewImage(fileInput, imgPreviewSelector, previewAreaImgSelector) {
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+        const imgPreview = document.querySelector(imgPreviewSelector);
+        const previewAreaImg = document.querySelector(previewAreaImgSelector);
+
+        reader.onload = function(e) {
+            if (imgPreview) imgPreview.src = e.target.result;
+            if (previewAreaImg) previewAreaImg.src = e.target.result;
+        }
+        if (file) {
+            reader.readAsDataURL(file);
+        } else {
+            if (imgPreview) imgPreview.src = 'https://via.placeholder.com/100x100.png?text=Logo';
+            if (previewAreaImg) previewAreaImg.src = 'https://via.placeholder.com/120x120.png?text=Logo';
+        }
+    }
+    function deleteImage(imgPreviewSelector, previewAreaImgSelector, fileInputId) {
+        document.getElementById(fileInputId).value = '';
+        const imgPreview = document.querySelector(imgPreviewSelector);
+        const previewAreaImg = document.querySelector(previewAreaImgSelector);
+        if (imgPreview) imgPreview.src = 'https://via.placeholder.com/100x100.png?text=Logo';
+        if (previewAreaImg) previewAreaImg.src = 'https://via.placeholder.com/120x120.png?text=Logo';
+    }
+
+    // 3. 미리보기 스타일 업데이트 - 이전과 동일
+    function updatePreviewStyle(styleProperty, value) {
+        const previewArea = document.getElementById('previewArea');
+        if (previewArea) {
+            previewArea.style[styleProperty] = value;
+        }
+        if (styleProperty === 'backgroundColor') {
+            document.getElementById('customColorInput').value = value;
+        }
+    }
+
+    // 4. 소셜 미디어 링크 미리보기 업데이트 (약간 수정: 여러 링크 처리 및 아이콘)
+    function updatePreviewSocial(inputElement) {
+        const socialType = inputElement.dataset.previewTargetSocial;
+        const url = inputElement.value;
+        const container = document.getElementById('previewSocialMediaLinks');
+        if (!container) return;
+
+        let linkElement = container.querySelector(`a[data-social-type="${socialType}"]`);
+
+        if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
+            if (!linkElement) {
+                linkElement = document.createElement('a');
+                linkElement.dataset.socialType = socialType;
+                linkElement.target = "_blank";
+                linkElement.classList.add('flex', 'items-center', 'text-gray-700', 'hover:text-blue-600', 'hover:underline');
+
+                const iconElement = document.createElement('i');
+                // 입력 필드의 아이콘 클래스를 가져오거나, socialType에 따라 매핑
+                const addedInputDiv = document.querySelector(`.added-social-input[data-social-type="${socialType}"]`);
+                let iconClass = 'fas fa-link'; // 기본 아이콘
+                if (addedInputDiv) {
+                    const labelIcon = addedInputDiv.querySelector('label i');
+                    if (labelIcon) iconClass = labelIcon.className; // label의 아이콘 클래스 사용
+                }
+                iconElement.className = `${iconClass} w-5 h-5 mr-2`; // Font Awesome 클래스
+
+                linkElement.appendChild(iconElement);
+
+                const textNode = document.createTextNode(url); // URL 자체를 텍스트로
+                linkElement.appendChild(textNode);
+                container.appendChild(linkElement);
+            }
+            linkElement.href = url;
+            linkElement.childNodes[1].textContent = url; // 아이콘 뒤 텍스트를 URL로
+            linkElement.style.display = 'flex';
+        } else {
+            if (linkElement) {
+                linkElement.style.display = 'none'; // URL 없거나 유효하지 않으면 숨김
+                if(!url) linkElement.remove(); // URL이 완전히 비워지면 아예 제거 (선택적)
+            }
+        }
+        // 미리보기 순서 정렬 (입력 필드 순서대로)
+        sortPreviewSocialLinks();
+    }
+
+    function sortPreviewSocialLinks() {
+        const container = document.getElementById('previewSocialMediaLinks');
+        const addedInputsContainer = document.getElementById('addedSocialLinksContainer');
+        if (!container || !addedInputsContainer) return;
+
+        const linksArray = Array.from(container.querySelectorAll('a[data-social-type]'));
+        const sortedLinks = linksArray.sort((a, b) => {
+            const typeAOrder = Array.from(addedInputsContainer.children).findIndex(div => div.dataset.socialType === a.dataset.socialType);
+            const typeBOrder = Array.from(addedInputsContainer.children).findIndex(div => div.dataset.socialType === b.dataset.socialType);
+            return typeAOrder - typeBOrder;
+        });
+        sortedLinks.forEach(link => container.appendChild(link)); // 정렬된 순서대로 다시 추가
+    }
+
+
+    // 5. 템플릿 선택 - 이전과 동일
+    let currentSelectedTemplate = document.getElementById('template1');
+    function selectTemplate(element, previewFile) {
+        if (currentSelectedTemplate) {
+            currentSelectedTemplate.classList.remove('template-selected');
+        }
+        element.classList.add('template-selected');
+        currentSelectedTemplate = element;
+        console.log("Selected template:", element.id, "Preview file hint:", previewFile);
+        // ... (HTMX 연동 또는 클라이언트 사이드 템플릿 변경 로직) ...
+        document.querySelectorAll('[data-preview-target]').forEach(input => updatePreviewContent(input, input.type === 'url' && input.id === 'website'));
+        document.querySelectorAll('.added-social-input input[type="url"]').forEach(input => updatePreviewSocial(input)); // 수정된 부분: 동적 소셜 입력 필드 대상
+        previewImage(document.getElementById('businessImageInput'),'#imagePreview', '#previewBusinessImage');
+    }
+
+    // --- 새 기능: 동적 소셜 링크 입력 필드 추가/삭제/이동 ---
+    const addedSocialLinksContainer = document.getElementById('addedSocialLinksContainer');
+
+    function addSocialLinkInput(type, label, iconClass, iconColorClass) {
+        // 이미 추가된 타입인지 확인 (중복 방지)
+        if (addedSocialLinksContainer.querySelector(`.added-social-input[data-social-type="${type}"]`)) {
+            alert(`${label} 입력 필드는 이미 추가되었습니다.`);
+            return;
+        }
+
+        const div = document.createElement('div');
+        div.className = 'p-3 border rounded-md bg-gray-50 added-social-input';
+        div.dataset.socialType = type;
+
+        div.innerHTML = `
+            <div class="flex justify-between items-center mb-2">
+                <label class="flex items-center text-sm font-medium text-gray-700">
+                    <i class="${iconClass} w-5 h-5 mr-2 text-${iconColorClass}"></i> ${label}
+                </label>
+                <div>
+                    <button type="button" class="text-gray-400 hover:text-gray-600 p-1 up-arrow" title="위로 이동" onclick="moveSocialInput(this.closest('.added-social-input'), 'up')">
+                        <i class="fas fa-arrow-up"></i>
+                    </button>
+                    <button type="button" class="text-gray-400 hover:text-gray-600 p-1 down-arrow" title="아래로 이동" onclick="moveSocialInput(this.closest('.added-social-input'), 'down')">
+                        <i class="fas fa-arrow-down"></i>
+                    </button>
+                    <button type="button" class="text-red-500 hover:text-red-700 p-1 ml-2" title="삭제" onclick="removeSocialInput(this.closest('.added-social-input'))">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                </div>
+            </div>
+            <input type="url" name="social_${type}" placeholder="https://${type}.com/yourprofile" class="p-2 shadow-sm block w-full sm:text-sm border-gray-300 rounded-md" data-preview-target-social="${type}" oninput="updatePreviewSocial(this)">
+        `;
+        addedSocialLinksContainer.appendChild(div);
+        // 새로 추가된 입력 필드에 대한 미리보기 초기화 (만약 값이 있다면)
+        updatePreviewSocial(div.querySelector('input[type="url"]'));
+        updateMoveButtonVisibility(); // 이동 버튼 상태 업데이트
+    }
+
+    function removeSocialInput(elementToRemove) {
+        const socialType = elementToRemove.dataset.socialType;
+        elementToRemove.remove();
+        // 미리보기에서도 해당 소셜 링크 제거
+        const previewLink = document.querySelector(`#previewSocialMediaLinks a[data-social-type="${socialType}"]`);
+        if (previewLink) {
+            previewLink.remove();
+        }
+        updateMoveButtonVisibility();
+        sortPreviewSocialLinks(); // 삭제 후 미리보기 순서 재정렬
+    }
+
+    function moveSocialInput(elementToMove, direction) {
+        const parent = elementToMove.parentNode;
+        if (direction === 'up' && elementToMove.previousElementSibling) {
+            parent.insertBefore(elementToMove, elementToMove.previousElementSibling);
+        } else if (direction === 'down' && elementToMove.nextElementSibling) {
+            parent.insertBefore(elementToMove.nextElementSibling, elementToMove);
+        }
+        updateMoveButtonVisibility();
+        sortPreviewSocialLinks(); // 이동 후 미리보기 순서 재정렬
+    }
+
+    function updateMoveButtonVisibility() {
+        const items = addedSocialLinksContainer.querySelectorAll('.added-social-input');
+        items.forEach((item, index) => {
+            const upButton = item.querySelector('.up-arrow');
+            const downButton = item.querySelector('.down-arrow');
+            if (upButton) upButton.style.display = (index === 0) ? 'none' : 'inline-flex';
+            if (downButton) downButton.style.display = (index === items.length - 1) ? 'none' : 'inline-flex';
+        });
+    }
+
+
+    // 페이지 로드 시 초기 설정
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('[data-preview-target]').forEach(input => {
+            updatePreviewContent(input, input.type === 'url' && input.id === 'website');
+            const targetSelector = input.dataset.previewTarget;
+            const sectionSelector = targetSelector + "Section";
+            const sectionElement = document.querySelector(sectionSelector);
+            if (sectionElement && (!input.value || input.value.trim() === '')) { // 수정: trim() 추가
+                sectionElement.style.display = 'none';
+            }
+        });
+        // 이미 추가된 소셜 링크 입력 필드에 대한 미리보기 업데이트 및 이동 버튼 상태 설정
+        document.querySelectorAll('.added-social-input input[type="url"]').forEach(input => updatePreviewSocial(input));
+        updateMoveButtonVisibility();
+
+        updatePreviewStyle('backgroundColor', document.getElementById('customColorInput').value);
+    });
 </script>
-
-<body class="bg-gray-50 min-h-screen flex flex-col items-center">
-<!-- 헤더 -->
-<header class="w-full py-4 px-6">
-    <div class="max-w-6xl mx-auto">
-        <div class="text-2xl font-bold text-gray-800">QR.io</div>
-    </div>
-</header>
-
-
-<div class="text-sm text-gray-700 cursor-pointer"
-     hx-post="/resend-code"
-     hx-target="#resend-result"
-     hx-ext="hx-dataset-include"
-     data-email="${email}"
-     data-token="${token}"
-     hx-include="this"
->
-    <p class="text-blue-600">
-        Resend Code
-    </p>
-
-    <p id="resend-result" class="text-gray-500">
-
-    </p>
-
-</div>
-<!-- 소셜 로그인 버튼들 -->
-<div class="flex flex-col gap-4 mt-2">
-    <!-- Google 로그인 버튼 -->
-    <a href="/oauth2/authorization/google"
-       class="flex w-full h-10 flex items-center justify-center bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition duration-200 shadow-sm">
-        <!-- Google 로고 (SVG로 추가) -->
-        <span class="flex items-center">
-                    <svg width="18" height="18" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
-                        <path fill="#EA4335"
-                              d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
-                        <path fill="#4285F4"
-                              d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
-                        <path fill="#FBBC05"
-                              d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
-                        <path fill="#34A853"
-                              d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
-                        <path fill="none" d="M0 0h48v48H0z"/>
-                    </svg>
-                    <span class="ml-2 text-gray-700 font-medium">
-                        @if(isSignUp)
-                            Sign Up with Google
-                        @else
-                            Log in with Google
-                        @endif
-                    </span>
-                </span>
-    </a>
-
-    <!-- GitHub 로그인 버튼 -->
-    <a href="/oauth2/authorization/github"
-       class="flex w-full h-10 flex items-center justify-center bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition duration-200 shadow-sm">
-                <span class="flex items-center">
-                    <!-- GitHub 아이콘 -->
-                    <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
-                        <path fill-rule="evenodd"
-                              d="M12 .297c-6.63 0-12 5.373-12 12 0 5.302
-                              3.438 9.8 8.205 11.385.6.113.82-.258.82-.577
-                              0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.757-1.333-1.757-1.089-.745.084-.729.084-.729
-                              1.205.084 1.84 1.236 1.84 1.236 1.07 1.834 2.807 1.304
-                              3.492.997.108-.776.418-1.305.762-1.605-2.665-.3-5.467-1.334-5.467-5.93
-                              0-1.31.468-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176
-                              0 0 1.005-.322 3.3 1.23a11.51 11.51 0 0 1 3-.405c1.02.005
-                              2.045.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24
-                              2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805
-                              5.625-5.475 5.92.435.375.81 1.096.81 2.215
-                              0 1.6-.015 2.887-.015 3.286 0 .315.21.69.825.57C20.565
-                              22.092 24 17.592 24 12.297 24 5.67 18.627.297 12 .297z"/>
-                    </svg>
-                    <span class="ml-2 text-gray-700 font-medium">
-                        @if(isSignUp)
-                            Sign Up with GitHub
-                        @else
-                            Log in with GitHub
-                        @endif
-                    </span>
-                </span>
-    </a>
-</div>
 </body>
 </html>

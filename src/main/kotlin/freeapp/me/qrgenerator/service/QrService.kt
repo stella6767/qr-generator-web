@@ -164,7 +164,7 @@ class QrService(
 
         val completeUpload =
             s3Service.completeUpload(s3UploadCompleteDto)
-        
+
         return completeUpload
     }
 
