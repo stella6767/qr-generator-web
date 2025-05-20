@@ -1,7 +1,7 @@
-@import freeapp.me.qrgenerator.config.QrGeneratorType
+@import  freeapp.me.qrgenerator.web.dto.QrGeneratorType
 @import java.util.*
 
-@param List<QrGeneratorType> types = freeapp.me.qrgenerator.config.QrGeneratorType.getEntries().stream().toList()
+@param List<QrGeneratorType> types = freeapp.me.qrgenerator.web.dto.QrGeneratorType.getEntries().stream().toList()
 @param QrGeneratorType defaultType
 
 

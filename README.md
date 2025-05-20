@@ -10,3 +10,7 @@ generate qrCode as static or dynamic(with S3 resource)
 ![img.png](img.png)
 
 
+```angular2html
+tar czvf secrets.tar.gz secret.yml
+base64 -i secrets.tar.gz -o secrets_base64.txt
+```

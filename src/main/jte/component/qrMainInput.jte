@@ -1,4 +1,4 @@
-@import freeapp.me.qrgenerator.config.QrGeneratorType
+@import  freeapp.me.qrgenerator.web.dto.QrGeneratorType
 @param QrGeneratorType type
 
 <div id="main-input-form">

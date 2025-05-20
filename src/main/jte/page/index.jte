@@ -1,4 +1,5 @@
-@param freeapp.me.qrgenerator.config.QrGeneratorType defaultType = freeapp.me.qrgenerator.config.QrGeneratorType.LINK
+@import  freeapp.me.qrgenerator.web.dto.QrGeneratorType
+@param QrGeneratorType defaultType = freeapp.me.qrgenerator.web.dto.QrGeneratorType.LINK
 
 @template.layout.main(content = @`
 
