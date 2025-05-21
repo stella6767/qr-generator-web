@@ -12,7 +12,7 @@
     <meta charset="UTF-8">
     <meta content="stella6767" name="author">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-
+    <meta name="google-site-verification" content="Kb2Rcs6nk9qQzTkYXEANfU7NBiqL8iuLoKYnnJ5eed0" />
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8671709485675431"
             crossorigin="anonymous"></script>
 </head>

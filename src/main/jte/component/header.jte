@@ -43,16 +43,16 @@
 
             @else
 
-                <div class="dropdown dropdown-end">
-                    <div tabindex="0" role="button" class="btn btn-ghost rounded-field">
-                        Guide
-                    </div>
-                    <ul
-                            tabindex="0"
-                            class="menu dropdown-content bg-base-200 rounded-box z-1 mt-4 w-52 p-2 shadow-sm">
-                        <li><a href="/billing/plans">View all plans</a></li>
-                    </ul>
-                </div>
+<%--                <div class="dropdown dropdown-end">--%>
+<%--                    <div tabindex="0" role="button" class="btn btn-ghost rounded-field">--%>
+<%--                        Guide--%>
+<%--                    </div>--%>
+<%--                    <ul--%>
+<%--                            tabindex="0"--%>
+<%--                            class="menu dropdown-content bg-base-200 rounded-box z-1 mt-4 w-52 p-2 shadow-sm">--%>
+<%--                        <li><a href="/billing/plans">View all plans</a></li>--%>
+<%--                    </ul>--%>
+<%--                </div>--%>
 
                 <a href="/login" class="btn btn-ghost rounded-field">Login</a>
                 <a href="/sign-up" class="btn btn-ghost rounded-field">Sign Up</a>
