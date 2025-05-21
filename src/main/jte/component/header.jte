@@ -1,7 +1,7 @@
 @import freeapp.me.qrgenerator.util.SecurityUtilsKt
 
 
-<div class="bg-gray-400 sticky top-0 z-30 flex justify-between w-full p-4 bg-gray-100 relative">
+<div class="navbar bg-gray-400 z-30 sticky top-0">
     <div class="flex-shrink-0">
         <a href="https://github.com/stella6767/qr-generator-web" target="_blank">
             <svg class="cursor-pointer" height="50" viewbox="0 0 98 96" width="50">
@@ -11,44 +11,55 @@
             </svg>
         </a>
     </div>
+
     <a href="/">
         <div class="cursor-pointer absolute left-1/2 top-1/3 transform -translate-x-1/2 font-bold text-xl flex items-center">
             QR Generator
         </div>
     </a>
-    <div>
-        @if(SecurityUtilsKt.isLoggedIn())
 
-            <a href="/profile">
-                <button type="button"
-                        class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium cursor-pointer
-                    rounded-lg border border-transparent bg-blue-500 text-white hover:bg-[#b4b4b480] focus:outline-hidden focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none">
-                    profile
-                </button>
-            </a>
+    <div class="flex grow justify-end px-2">
+        <div class="flex items-stretch">
 
-            <a href="/logout">
-                <button type="button"
-                        class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium cursor-pointer
-                    rounded-lg border border-transparent bg-orange-500 text-white hover:bg-[#b4b4b480] focus:outline-hidden focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none">
-                    Logout
-                </button>
-            </a>
-        @else
-            <a href="/login">
-                <button type="button"
-                        class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium cursor-pointer
-                    rounded-lg border border-transparent bg-orange-500 text-white hover:bg-[#b4b4b480] focus:outline-hidden focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none">
-                    Log In
-                </button>
-            </a>
-            <a href="/sign-up">
-                <button type="button"
-                        class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg
-                    cursor-pointer border border-transparent bg-blue-600 text-white hover:bg-[#b4b4b480] focus:outline-hidden focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none">
-                    Sign Up
-                </button>
-            </a>
-        @endif
+            @if(SecurityUtilsKt.isLoggedIn())
+
+                <div class="dropdown dropdown-end">
+                    <div tabindex="0" role="button" class="btn btn-ghost rounded-field">
+                        <div class="w-8 rounded-full">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                 stroke="currentColor" class="w-5 h-5">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                      d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <ul
+                            tabindex="0"
+                            class="menu dropdown-content bg-base-200 rounded-box z-1 mt-4 w-52 p-2 shadow-sm">
+                        <li><a href="/profile">Profile</a></li>
+                        <li><a href="/logout">Logout</a></li>
+                    </ul>
+                </div>
+
+            @else
+
+                <div class="dropdown dropdown-end">
+                    <div tabindex="0" role="button" class="btn btn-ghost rounded-field">
+                        Guide
+                    </div>
+                    <ul
+                            tabindex="0"
+                            class="menu dropdown-content bg-base-200 rounded-box z-1 mt-4 w-52 p-2 shadow-sm">
+                        <li><a href="/billing/plans">View all plans</a></li>
+                    </ul>
+                </div>
+
+                <a href="/login" class="btn btn-ghost rounded-field">Login</a>
+                <a href="/sign-up" class="btn btn-ghost rounded-field">Sign Up</a>
+
+            @endif
+        </div>
     </div>
 </div>
+
+

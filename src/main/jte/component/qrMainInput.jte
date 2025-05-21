@@ -7,7 +7,7 @@
         <input id="value" name="text" type="text" placeholder="https://"
                class="w-full p-2 border rounded mt-2" required>
     @elseif(type == QrGeneratorType.TEXT)
-        <h2 class="font-semibold">1. Complete the content</h2>
+        <h2 class="font-semibold text-black">1. Complete the content</h2>
         <div class="flex flex-col mt-2">
             <label for="generator-section-input-2" class="font-semibold">Message</label>
             <textarea id="value" name="text" type="text" maxlength="1000"

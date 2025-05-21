@@ -12,6 +12,9 @@
     <meta charset="UTF-8">
     <meta content="stella6767" name="author">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8671709485675431"
+            crossorigin="anonymous"></script>
 </head>
 <body id="body" hx-indicator=".loading-bar">
 <div class="loading-bar"></div>
@@ -19,6 +22,7 @@
 <div id="error-alert-container"></div>
 
 ${content}
+
 
 
 </body>
