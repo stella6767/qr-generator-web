@@ -9,7 +9,8 @@ services:
     #platform: linux/arm64/v8
 #      - linux/amd64
     build:
-      dockerfile: /home/ubuntu/cicd/qr/Dockerfile
+      context: .
+      dockerfile: Dockerfile
     ports:
       - "8082:8082" # NGINX가 8082로 프록시
     environment:

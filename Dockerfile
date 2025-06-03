@@ -1,4 +1,4 @@
-FROM openjdk:21-jdk
+FROM openjdk:21
 LABEL maintainer="stella6767"
 ARG JAR_FILE=qr-generator-0.0.1-SNAPSHOT.jar
 COPY ${JAR_FILE} /qr-webui.jar
