@@ -78,12 +78,13 @@ jobs:
 
       - name: SCP transfer
         run: |
-         scp -r scripts build/libs/*.jar Dockerfile docker-compose-qr.yml ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}:~/cicd/qr
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} "mkdir -p /home/ubuntu/cicd/qr" 
+         scp -r scripts build/libs/*.jar Dockerfile docker-compose-qr.yml ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}:/home/ubuntu/cicd/qr
 
       - name: Execute remote commands
         run: |
           if [[ "${{ inputs.branch }}" == "main" ]]; then
-             ssh -v ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} "sudo sh ~/cicd/qr/scripts/deploy-docker.sh"
+             ssh -v ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} "sudo sh /home/ubuntu/cicd/qr/scripts/deploy-docker.sh"
           else
             echo "No specific script found for this"
           fi
